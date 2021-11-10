@@ -3,7 +3,8 @@ function install(packages) {
 
     for (let p of packages) {
         if (p === 'gimme') {
-            p = '../packages/gimme/install.js';
+            // need to make github repo for gimme
+            p = '';
         }
         dinos.log(p);
 
