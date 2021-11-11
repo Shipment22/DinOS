@@ -109,7 +109,7 @@ dinos.cmd_add(
 dinos.cmd_add({
     name: 'Link',
     fun: function() {
-        dinos.log('Sax Man');
+        dinos.log('Link does exist.');
     },
 });
 
