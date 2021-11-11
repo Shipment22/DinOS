@@ -94,7 +94,7 @@ var dinnerminal = new (function() {
                     str = str.split('');
                     str.splice(str.length - 1, 1);
                     str = str.join('');
-                    pos--;
+                    if (str !== '') { pos --; }
                 } else if (p.keyIsDown(38)) {
                     if (recalnum > 0) {recalnum --;}
                     str = inputs[recalnum] ? inputs[recalnum] : str;
