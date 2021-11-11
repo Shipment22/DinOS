@@ -14,7 +14,7 @@ var dinnerminal = new (function() {
         let ty = 20;                                    // "caret" y in pixels
 
         let hist = dinos.logs.join('\n\n');             // history/logs
-        let path = '/';                                 // directory once i get a file system setup
+        let path = '~';                                 // directory once i get a file system setup
 
         let fps = 0;                                    // frame rate (lerped so its easier to see)
 
@@ -81,6 +81,7 @@ var dinnerminal = new (function() {
             if (id === currActivity) {
 
                 if (p.key === 'Enter') {
+                    dinos.currDir = path;
                     inputs.push(str);
                     dinos.log('$ ' + str);
                     dinos.cmd_run(str);

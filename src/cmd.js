@@ -126,3 +126,25 @@ dinos.cmd_add({
         dinos.log('why so sad??');
     },
 });
+
+dinos.cmd_add({
+    name: 'fwrite',
+    fun: function(o) {
+        let j = `${dinos.currDir}/${o[0]}`.split('/');
+        let str = '';
+        for (let a of j) {
+            if (a === '~') {a = 'home';}
+            str += `['${a}']`;
+        }
+        str = `dinos.storage${str} = '${o[1]}';`;
+        dinos.log(str);
+        eval(str);
+    },
+});
+
+dinos.cmd_add({
+    name: 'fread',
+    fun: function(o) {
+        dinos.log(dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`));
+    },
+});

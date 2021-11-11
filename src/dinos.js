@@ -74,10 +74,10 @@ var DINOS = function() {
         let yesses = [ // well this is an interesting section of code
             'yes',
             'y',
-            'yess',
             'yea',
             'yeah',
             'yup',
+            'yep',
             'yee',
             'true',
             'yerp',
@@ -91,6 +91,30 @@ var DINOS = function() {
             }
         }
         return false;
+    };
+
+    this.memory = {
+        activitys: {},
+    };
+
+    this.currDir = '~';
+
+    this.translateDir = function(obj, loc) {
+        let j = loc.split('/');
+        if (j.length > 0 && typeof obj === 'object') {
+            if (j[0] === '~') { j[0] = 'home'; }
+            let o = obj[j[0]];
+            j.splice(0, 1);
+            j = j.join('/');
+            return this.translateDir(o, j);
+        } else {
+            return obj;
+        }
+    };
+
+    this.storage = {
+        home: {},
+        sys: {},
     };
 
     this.rickroll = `We're no strangers to love
@@ -151,17 +175,6 @@ Never gonna give you up, never gonna let you down
 Never gonna run around and desert you
 Never gonna make you cry, never gonna say goodbye
 Never gonna tell a lie and hurt you`;
-
-    this.memory = {
-        activitys: {},
-    };
-
-    this.storage = {
-        logs: [],
-        packages: [],
-        apps: [],
-        files: [],
-    };
 };
 dinos = new DINOS();
 dinos.log('Hello World!\nDINOS is up and running!');
