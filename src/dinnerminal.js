@@ -94,13 +94,15 @@ var dinnerminal = new (function() {
                     str = str.split('');
                     str.splice(str.length - 1, 1);
                     str = str.join('');
-                    if (str !== '') { pos --; }
+                    if (pos > 0) { pos --; }
                 } else if (p.keyIsDown(38)) {
                     if (recalnum > 0) {recalnum --;}
                     str = inputs[recalnum] ? inputs[recalnum] : str;
+                    pos = str.length;
                 } else if (p.keyIsDown(40)) {
                     if (recalnum < inputs.length) {recalnum ++;}
                     str = inputs[recalnum] ? inputs[recalnum] : str;
+                    pos = str.length;
                 } else if (p.keyCode >= 48 || p.keyCode === 32) {
                     str += p.key;
                     pos ++;

@@ -12,7 +12,7 @@ var DINOS = function() {
     this.cmds = {};
 
     this.cmd_add = function(cmd) {
-        this.cmds[cmd.name] = cmd.fun;
+        this.cmds[cmd.name] = cmd;
     };
 
     this.cmd_run = function(code) {
@@ -34,9 +34,9 @@ var DINOS = function() {
                 let cmd = args[0];
                 args.splice(0, 1);
                 if (this.cmds[cmd]) {
-                    this.cmds[cmd](args);
+                    this.cmds[cmd].fun(args);
                 } else {
-                    dinos.log(cmd + ' does not exist.');
+                    dinos.log(cmd + ' is not a valid command.');
                 }
             }
         }catch(e) {

@@ -2,29 +2,12 @@ dinos.cmd_add(
     {
         name: 'help',
         fun: o => {
-            let helpObj = {
-                echo: 'returns the parameters',
-                hello: 'ruturns Hello!! + (optional) string of text',
-                hi: 'ruturns Hello!! + (optional) string of text',
-                dinos: 'returns DinOS (Dinner OS)',
-                p5: 'tells you weather p5js has been loaded',
-                activity: 'parameters: [method (create, switch)] [number(activity to switch to)/string(activity to create)]',
-                add_package: 'parameter: [url(s) of package(s)]',
-            };
-            let helpArr = [
-                'echo',
-                'hello',
-                'hi',
-                'dinos',
-                'p5',
-                'activity',
-                'add_package',
-            ];
             if (o[0]) {
-                dinos.log(o[0] + ': ' + helpObj[o[0]]);
+                dinos.log(o[0] + ': ' + dinos.cmds[o[0]].help || 'no help text found :/');
             } else {
-                for (let i in helpArr) {
-                    dinos.log(helpArr[i] + ': ' + helpObj[helpArr[i]]);
+                for (let j in dinos.cmds) {
+                    if (!dinos.cmds[j].list) { continue; }
+                    dinos.log(`${j}: ${dinos.cmds[j].help || 'no help text found :/'}`);
                 }
             }
         },
@@ -38,6 +21,8 @@ dinos.cmd_add(
         fun: o => {
             dinos.log('Hello!! ' + o);
         },
+        help: 'Returns "Hello!!" + (optional) string of text',
+        list: true
     }
 );
 dinos.cmd_add(
@@ -147,4 +132,11 @@ dinos.cmd_add({
     fun: function(o) {
         dinos.log(dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`));
     },
+});
+
+dinos.cmd_add({
+    name: 'eval',
+    fun: function(o) {
+        eval(o);
+    }
 });
