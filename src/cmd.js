@@ -14,7 +14,6 @@ dinos.cmd_add(
     }
 );
 
-
 dinos.cmd_add(
     {
         name: 'hello',
@@ -29,10 +28,13 @@ dinos.cmd_add(
     {
         name: 'hi',
         fun: o => {
-            dinos.log('Hello!! ' + o);
+            dinos.log('Hi!! ' + o);
         },
+        help: 'Returns "Hi!!" + (optional) string of text',
+        list: true
     }
 );
+
 dinos.cmd_add(
     {
         name: 'echo',
@@ -41,8 +43,11 @@ dinos.cmd_add(
                 dinos.log(j);
             }
         },
+        help: 'Outputs whatever you input',
+        list: true
     }
 );
+
 dinos.cmd_add(
     {
         name: 'dinos',
@@ -51,14 +56,18 @@ dinos.cmd_add(
         },
     }
 );
+
 dinos.cmd_add(
     {
         name: 'p5',
         fun: o => {
-            dinos.log(dinos.hasp5());
+            dinos.log(dinos.hasp5() ? 'p5 is loaded :)' : 'no p5 here');
         },
-    }
+        help: 'outputs wether p5 exists',
+        list: true
+    },
 );
+
 dinos.cmd_add(
     {
         name: 'activity',
@@ -74,7 +83,7 @@ dinos.cmd_add(
                     currActivity = activitys.length - 1;
                     dinos.setupActivity();
                 } else {
-                    dinos.log('I\'m sorry but that activity does not exist :( maybe you spelled wrong or didn\'t load it.')
+                    dinos.log('I\'m sorry but that activity does not exist :( or maybe you spelled wrong or didn\'t load it.')
                 }
             } else if (o[0] === 'switch') {
                 dinos.switchActivity(Number(o[1]));
@@ -113,6 +122,13 @@ dinos.cmd_add({
 });
 
 dinos.cmd_add({
+    name: ':)',
+    fun: function() {
+        dinos.log('happy face!!');
+    },
+});
+
+dinos.cmd_add({
     name: 'fwrite',
     fun: function(o) {
         let j = `${dinos.currDir}/${o[0]}`.split('/');
@@ -132,11 +148,4 @@ dinos.cmd_add({
     fun: function(o) {
         dinos.log(dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`));
     },
-});
-
-dinos.cmd_add({
-    name: 'eval',
-    fun: function(o) {
-        eval(o);
-    }
 });

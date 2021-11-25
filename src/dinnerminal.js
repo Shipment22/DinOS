@@ -8,7 +8,7 @@ var dinnerminal = new (function() {
 
         let str = '';                                   // input string
         let recalnum = 1;                               // input to recal to
-        let inputs = [];                                // recals
+        let inputs = [' '];                              // recals
         let pos = 0;                                    // "caret" x in characters
         let tpos = 27.2 + pos * 10.800000190734863;     // "caret" x translated to pixels
         let ty = 20;                                    // "caret" y in pixels
@@ -40,6 +40,7 @@ var dinnerminal = new (function() {
             hist = dinos.logs.join('\n\n');
             tpos = 20 + (pos + path.length + 3) * 10.800000190734863;
             ty = (hist.split('\n').length + 2) * 20;
+
         }
 
         p.draw = function() {
@@ -82,12 +83,16 @@ var dinnerminal = new (function() {
 
                 if (p.key === 'Enter') {
                     dinos.currDir = path;
-                    inputs.push(str);
+
                     dinos.log('$ ' + str);
                     dinos.cmd_run(str);
+
+                    inputs = [...inputs, str];
+                    recalnum = 0;
+
                     str = '';
-                    recalnum = inputs.length;
                     pos = 0;
+
                     update();
                     scrollY = p.constrain(scrollY, ty + 100 - p.height, (hist.split('\n').length-1.8) * 20);
                 } else if (p.keyIsDown(8)) {
@@ -96,11 +101,11 @@ var dinnerminal = new (function() {
                     str = str.join('');
                     if (pos > 0) { pos --; }
                 } else if (p.keyIsDown(38)) {
-                    if (recalnum > 0) {recalnum --;}
+                    if (recalnum < inputs.length) {recalnum ++;}
                     str = inputs[recalnum] ? inputs[recalnum] : str;
                     pos = str.length;
                 } else if (p.keyIsDown(40)) {
-                    if (recalnum < inputs.length) {recalnum ++;}
+                    recalnum = recalnum <= 0 ? 0 : recalnum - 1;
                     str = inputs[recalnum] ? inputs[recalnum] : str;
                     pos = str.length;
                 } else if (p.keyCode >= 48 || p.keyCode === 32) {
