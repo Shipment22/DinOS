@@ -149,3 +149,10 @@ dinos.cmd_add({
         dinos.log(dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`));
     },
 });
+
+dinos.cmd_add({
+    name: 'clear',
+    fun: function() {
+        dinos.logs = [];
+    }
+});

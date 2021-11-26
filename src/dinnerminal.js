@@ -8,12 +8,12 @@ var dinnerminal = new (function() {
 
         let str = '';                                   // input string
         let recalnum = 1;                               // input to recal to
-        let inputs = [' '];                              // recals
+        let inputHist = [];                                // previus inputs
         let pos = 0;                                    // "caret" x in characters
         let tpos = 27.2 + pos * 10.800000190734863;     // "caret" x translated to pixels
         let ty = 20;                                    // "caret" y in pixels
 
-        let hist = dinos.logs.join('\n\n');             // history/logs
+        let logHist = dinos.logs.join('\n\n');             // history/logs
         let path = '~';                                 // directory once i get a file system setup
 
         let fps = 0;                                    // frame rate (lerped so its easier to see)
@@ -37,9 +37,9 @@ var dinnerminal = new (function() {
         }
 
         function update() {
-            hist = dinos.logs.join('\n\n');
+            logHist = dinos.logs.join('\n\n');
             tpos = 20 + (pos + path.length + 3) * 10.800000190734863;
-            ty = (hist.split('\n').length + 2) * 20;
+            ty = (logHist.split('\n').length + 2) * 20;
 
         }
 
@@ -58,7 +58,7 @@ var dinnerminal = new (function() {
                 p.translate(0, -y);
 
                 p.fill(234, 135, 198);
-                p.text(hist, 20, 20); // all logs
+                p.text(logHist, 20, 20); // all logs
 
 
                 p.fill(255);
@@ -81,48 +81,69 @@ var dinnerminal = new (function() {
         p.keyPressed = function() {
             if (id === currActivity) {
 
-                if (p.key === 'Enter') {
-                    dinos.currDir = path;
-
-                    dinos.log('$ ' + str);
-                    dinos.cmd_run(str);
-
-                    inputs = [...inputs, str];
-                    recalnum = 0;
-
-                    str = '';
-                    pos = 0;
-
-                    update();
-                    scrollY = p.constrain(scrollY, ty + 100 - p.height, (hist.split('\n').length-1.8) * 20);
-                } else if (p.keyIsDown(8)) {
-                    str = str.split('');
-                    str.splice(str.length - 1, 1);
-                    str = str.join('');
-                    if (pos > 0) { pos --; }
-                } else if (p.keyIsDown(38)) {
-                    if (recalnum < inputs.length) {recalnum ++;}
-                    str = inputs[recalnum] ? inputs[recalnum] : str;
-                    pos = str.length;
-                } else if (p.keyIsDown(40)) {
-                    recalnum = recalnum <= 0 ? 0 : recalnum - 1;
-                    str = inputs[recalnum] ? inputs[recalnum] : str;
-                    pos = str.length;
-                } else if (p.keyCode >= 48 || p.keyCode === 32) {
+                // letters/numbers/whitespace
+                if (p.keyCode >= 48 || p.keyCode === 32) {
                     str += p.key;
                     pos ++;
+                }
+
+                // things that require there to be a input
+                else if (str.length > 0) {
+                    if (p.keyIsDown(p.ENTER)) {
+                        if (p.keyIsDown(p.SHIFT)) {
+                            // do thing...
+                        } else {
+                            dinos.currDir = path;
+
+                            dinos.log('$ ' + str);
+                            dinos.cmd_run(str);
+
+                            inputHist = [str, ...inputHist];
+                            recalnum = 0;
+
+                            str = '';
+                            pos = 0;
+
+                            update();
+                            scrollY = p.constrain(scrollY, ty + 100 - p.height, (logHist.split('\n').length-1.8) * 20);
+                        }
+                    } else if (p.keyIsDown(8)) {
+                        str = str.split('');
+                        str.splice(str.length - 1, 1);
+                        str = str.join('');
+                        if (pos > 0) { pos --; }
+                    }
+                } 
+
+                // previus inputs control
+                if (p.keyIsDown(38)) { // up
+                    recalnum ++;
+                    if (recalnum > inputHist.length) {
+                        recalnum = inputHist.length;
+                    }
+                    str = inputHist[recalnum - 1] || str;
+                    pos = str.length;
+                } else if (p.keyIsDown(40)) { // down
+                    recalnum --;
+                    if (recalnum <= 0) {
+                        str = '';
+                        recalnum = 0;
+                    } else {
+                        str = inputHist[recalnum - 1] || str;
+                    }
+                    pos = str.length;
                 }
                 update();
             }
         }
 
-        // function calcDisplayHist() {
-        //     let h = hist.split('\n');
+        // function calcDisplaylogHist() {
+        //     let h = logHist.split('\n');
         //     let why = p.floor((y / 20)) - 1;
         //     if (why < 0) { why = 0; }
         //     let yplush = why + p.floor(p.height / 20) + 2;
         //     let s = h.slice(why, yplush).join('\n');
-        //     displayHist = s;
+        //     displaylogHist = s;
         // }
 
         p.mouseWheel = function(event) {
@@ -132,8 +153,8 @@ var dinnerminal = new (function() {
                 scrollY += event.delta < 0 ? -scrollSize : scrollSize;
                 // if (scrollY > pscrollY + scrollSize) { scrollY = pscrollY + scrollSize; } 
                 // else if (scrollY < pscrollY - scrollSize) { scrollY = pscrollY - scrollSize; }
-                scrollY = p.constrain(scrollY, 0, (hist.split('\n').length-1.8) * 20);
-                // calcDisplayHist();
+                scrollY = p.constrain(scrollY, 0, (logHist.split('\n').length-1.8) * 20);
+                // calcDisplaylogHist();
             }
         }
 
