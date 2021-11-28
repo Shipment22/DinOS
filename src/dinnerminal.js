@@ -21,6 +21,8 @@ var dinnerminal = new (function() {
         let logo;
 
         p.setup = function() {
+            dinos.log('Done setting up dinnerminal!')
+
             c = p.createCanvas(p.windowWidth, p.windowHeight);
 
             c.id('dinnerminal' + currActivity);
@@ -242,8 +244,8 @@ var dinnerminal = new (function() {
     };
 });
 
-enviormentSetups.dinnerminal = (function() {
-    dinos.log('dinnerminal setup started.');
+environmentSetups.dinnerminal = (function() {
+    dinos.log('setting up dinnerminal...');
 
     if (dinos.hasp5()) {
         new p5(dinnerminal.p5inst);

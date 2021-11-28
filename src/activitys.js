@@ -8,4 +8,4 @@ var activitys = [
     },
 ];
 
-var enviormentSetups = {};
+var environmentSetups = {};

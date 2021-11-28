@@ -6,9 +6,6 @@ var DINOS = function() {
         this.logs.push(l);
     };
 
-    this.cmds = {
-    };
-
     this.cmds = {};
 
     this.cmd_add = function(cmd) {
@@ -50,7 +47,7 @@ var DINOS = function() {
 
     this.setupActivity = function() {
         let activity = activitys[currActivity];
-        enviormentSetups[activity.enviorment](activity);
+        environmentSetups[activity.enviorment](activity);
         dinos.log('DINOS ran the setup function for your activity, "' + activity.enviorment + '" should be running now!')
         for (let i in activitys) {
             if (activity !== activitys[i]) {

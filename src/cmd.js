@@ -73,7 +73,7 @@ dinos.cmd_add(
         name: 'activity',
         fun: o => {
             if (o[0] === 'create') {
-                if (enviormentSetups[o[1]]) {
+                if (environmentSetups[o[1]]) {
                     activitys.push(
                         {
                             name: o[1],
@@ -83,7 +83,7 @@ dinos.cmd_add(
                     currActivity = activitys.length - 1;
                     dinos.setupActivity();
                 } else {
-                    dinos.log('I\'m sorry but that activity does not exist :( or maybe you spelled wrong or didn\'t load it.')
+                    dinos.log(`I'm sorry, but ${o[1]} doesn't seem to exist/be loaded :\\`)
                 }
             } else if (o[0] === 'switch') {
                 dinos.switchActivity(Number(o[1]));
