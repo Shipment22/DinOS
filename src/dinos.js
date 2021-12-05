@@ -111,6 +111,7 @@ var DINOS = function() {
 
     this.storage = {
         home: {},
+        bin: {},
         sys: {},
     };
 

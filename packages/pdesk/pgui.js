@@ -22,7 +22,7 @@ class PizzaGui {
             this.g.stroke(0);
             this.g.strokeWeight(2);
             this.g.strokeCap('round');
-            this.g.fill(user.theme.cursors.default);
+            this.g.fill('purple');
             this.g.beginShape();
             this.g.curveVertex(0, 0);
             this.g.curveVertex(0 - 3, 0 + 20);
@@ -56,7 +56,7 @@ class PizzaGui {
         this.drawCursor();
     }
 
-    drawCursor() { // NOTE: make cursor changable though user settings
+    drawCursor() {
         this.p.image(this.cursor_default, this.p.mouseX - 5, this.p.mouseY);
     }
 

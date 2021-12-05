@@ -41,7 +41,7 @@ var pdesk = new (function() {
                     this.g.fill(0);
                     this.g.text(`
 Welcome to PDesk! an extension for DinOS (Dinner OS),
-the "Desk" desktop, and the "P" stands for Pizza,
+the "Desk" is desktop, and the "P" stands for Pizza,
 because Pizza is good.`, 20, 30);
                     this.g.fill('blue');
                     this.g.text('rules / terms of service', 30, 100);
@@ -50,11 +50,10 @@ because Pizza is good.`, 20, 30);
                     (/*set icon*/ () => {
                         let g = p.createGraphics(50, 50);
                         g.fill(0);
-                        if (g.floor(g.random(20)) === 1) { g.fill(255); }
                         g.rect(0, 0, 50, 50, 7);
                         g.textSize(10);
                         let t = 'Welcome!';
-                        let ca = ['#f00', '#eb0', '#ff0', '#0f0', '#55f', '#a0a'];
+                        let ca = ['#f00', '#eb0', '#ff0', '#0f0', '#55f', '#cf00cf'];
                         let c = g.random(ca);
                         let r = g.random(5);
                         for (let i in t) {
@@ -74,9 +73,26 @@ because Pizza is good.`, 20, 30);
                         dinos.memory.activitys[currActivity].apps.push(new PApp(
                             {
                                 title: 'you know the rules and so do i',
+                                setup() {
+                                    this.rick = 0;
+                                },
                                 draw: function() {
                                     this.g.clear();
                                     this.g.text(dinos.rickroll, 20, 30 - (this.p.frameCount) * 2 % 1300 + 300);
+                                },
+                                whenActive: function() {
+                                    if (this.rick % 5 === 0) {
+                                        (/*set icon*/ () => {
+                                            let g = p.createGraphics(50, 50);
+                                            g.fill(g.sin(this.rick / 70) * 255);
+                                            g.rect(0,0,50,50,7);
+                                            g.fill(g.sin(this.rick / 70) * -255);
+                                            g.textSize(50 + g.sin(this.rick / 100) * 10);
+                                            g.text(dinos.rickroll[g.floor(this.rick / 5)], 0, 50);
+                                            this.iconImg = g.get();
+                                        })();
+                                    }
+                                    this.rick++;
                                 }
                             }
                         ));
@@ -84,25 +100,43 @@ because Pizza is good.`, 20, 30);
                 }
             }));
 
-            apps.push(new PApp(
-                {
-                    title: 'test',
-                    w: 400,
-                    h: 400,
-                    setup: function() {
-                        try {
-                            let itsSetUP = false;
-                            var that = this;
-                            let program = PROGRAMM;
-                            program = convertToPApp(program, true);
-                            eval(program);
-                            if (itsSetUP) {this.setup();}
-                        }catch(e) {
-                            console.error("PROGRAMM\n" + e);
-                        }
-                    }
-                }
-            ));
+            // apps.push(new PApp(
+            //     {
+            //         title: 'test',
+            //         w: 400,
+            //         h: 400,
+            //         setup: function() {
+            //             try {
+            //                 let itsSetUP = false;
+            //                 var that = this;
+            //                 let program = PROGRAMM;
+            //                 program = convertToPApp(program, true);
+            //                 eval(program);
+            //                 if (itsSetUP) {this.setup();}
+            //             }catch(e) {
+            //                 console.error("PROGRAMM\n" + e);
+            //             }
+            //         },
+            //         onChange: function() {
+            //             (/*set icon*/ () => {
+            //                 let g = p.createGraphics(50, 50);
+            //                 g.fill(0, 70, 150);
+            //                 g.rect(0, 0, 50, 50, 7);
+
+            //                 g.translate(25, 25);
+            //                 if (g.floor(g.random(10)) === 1) {
+            //                     g.rotate(g.PI / 2);
+            //                 }
+
+            //                 g.fill(255);
+            //                 g.textSize(50);
+            //                 g.textAlign('center', 'center');
+            //                 g.text(':)', 0, 0);
+            //                 this.iconImg = g.get();
+            //             })();
+            //         }
+            //     }
+            // ));
         }
 
         p.draw = function() {
@@ -113,7 +147,7 @@ because Pizza is good.`, 20, 30);
 
                 p.fill(255, 100);
                 p.textSize(100);
-                p.text('PDesk V0.1.1\nDinOS V0.5.0', 50, 150);
+                p.text('PDesk V0.1.2\nDinOS V0.5.1', 50, 150);
 
                 for (let i in apps) {
                     if (i > apps.length - 2 && appActive) {apps[apps.length - 1].active();}
@@ -180,10 +214,10 @@ because Pizza is good.`, 20, 30);
 
             if (appActive) {
                 apps[apps.length - 1].mouseReleased();
+                if (apps[apps.length - 1].mouseOver()) {if(apps[apps.length - 1].mouseOverTop()) {apps[apps.length - 1].titleBarReleased();}}
             }
 
             for (let i in apps) {
-                if (apps[i].mouseOver()) {appNum = i; apps[i].mouseOverTop() ? apps[i].titleBarReleased() :0;}
                 if (apps[i].needToClose) { 
                     for (let j in apps) {
                         apps[j].i = j;
@@ -207,10 +241,12 @@ because Pizza is good.`, 20, 30);
     };
 })();
 
-enviormentSetups.pdesk = (function() {
+environmentSetups.pdesk = (function() {
     dinos.log('pdesk setup started.');
 
     if (dinos.hasp5()) {
         new p5(pdesk.p5inst);
     }
 });
+
+dinos.log('pdesk.js loaded.');

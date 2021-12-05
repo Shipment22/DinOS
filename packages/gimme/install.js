@@ -1,5 +1,6 @@
 const gimmes = {
 	pdesk: './packages/pdesk/install.js',
+	PAppConverter: './packages/PAppConverter/install.js'
 };
 
 dinos.cmd_add(

@@ -72,9 +72,9 @@ class PApp {
 
         g.stroke(0);
         g.rect(0, 0, this.w, this.h, 7);
-        g.strokeWeight(user.theme.titlebar.strokeWeight);
-        g.stroke(user.theme.titlebar.stroke);
-        g.fill(user.theme.titlebar.fill);
+        g.strokeWeight(3);
+        g.stroke('#006d00');
+        g.fill('green');
         g.rect(0, 0, this.w, this.titlebarH, 10,10,3,3);
         g.fill(0, 20);
         g.noStroke();
@@ -130,3 +130,5 @@ class PApp {
         this.contentY = this.y + this.titlebarH;
     }
 }
+
+dinos.log('papps.js loaded.');
