@@ -156,3 +156,10 @@ dinos.cmd_add({
         dinos.logs = [];
     }
 });
+
+dinos.cmd_add({
+    name: 'bob',
+    fun: function() {
+        dinos.log('test');
+    }
+});

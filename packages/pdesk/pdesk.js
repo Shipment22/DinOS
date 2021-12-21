@@ -147,7 +147,7 @@ because Pizza is good.`, 20, 30);
 
                 p.fill(255, 100);
                 p.textSize(100);
-                p.text('PDesk V0.1.2\nDinOS V0.5.1', 50, 150);
+                p.text('PDesk V0.1.3\nDinOS V0.5.2', 50, 150);
 
                 for (let i in apps) {
                     if (i > apps.length - 2 && appActive) {apps[apps.length - 1].active();}
@@ -161,7 +161,7 @@ because Pizza is good.`, 20, 30);
                 fps = p.lerp(fps, p.frameRate(), 0.1);
                 p.text(fps.toFixed(3), 20, 20);
 
-                }catch(e) {
+                } catch (e) {
                     console.error(e);
                 }
             }
