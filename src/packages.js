@@ -8,4 +8,4 @@ function install(packages) {
     }
 }
 
-install(['/DinOS/packages/gimme/install.js']);
+install(['packages/gimme/install.js']);

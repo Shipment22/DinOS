@@ -39,10 +39,7 @@ var pdesk = new (function() {
                 setup: function() {
                     this.g.clear();
                     this.g.fill(0);
-                    this.g.text(`
-Welcome to PDesk! an extension for DinOS (Dinner OS),
-the "Desk" is desktop, and the "P" stands for Pizza,
-because Pizza is good.`, 20, 30);
+                    this.g.text('Welcome to PDesk! an extension for DinOS (Dinner OS), he "Desk" is desktop, and the "P" stands for Pizza, because Pizza is good.', 20, 30, this.w - 20);
                     this.g.fill('blue');
                     this.g.text('rules / terms of service', 30, 100);
                 },
@@ -100,43 +97,105 @@ because Pizza is good.`, 20, 30);
                 }
             }));
 
-            // apps.push(new PApp(
-            //     {
-            //         title: 'test',
-            //         w: 400,
-            //         h: 400,
-            //         setup: function() {
-            //             try {
-            //                 let itsSetUP = false;
-            //                 var that = this;
-            //                 let program = PROGRAMM;
-            //                 program = convertToPApp(program, true);
-            //                 eval(program);
-            //                 if (itsSetUP) {this.setup();}
-            //             }catch(e) {
-            //                 console.error("PROGRAMM\n" + e);
-            //             }
-            //         },
-            //         onChange: function() {
-            //             (/*set icon*/ () => {
-            //                 let g = p.createGraphics(50, 50);
-            //                 g.fill(0, 70, 150);
-            //                 g.rect(0, 0, 50, 50, 7);
+            apps.push(new PApp(
+                {
+                    title: 'test',
 
-            //                 g.translate(25, 25);
-            //                 if (g.floor(g.random(10)) === 1) {
-            //                     g.rotate(g.PI / 2);
-            //                 }
+                    x: 60,
+                    y: 60,
 
-            //                 g.fill(255);
-            //                 g.textSize(50);
-            //                 g.textAlign('center', 'center');
-            //                 g.text(':)', 0, 0);
-            //                 this.iconImg = g.get();
-            //             })();
-            //         }
-            //     }
-            // ));
+                    w: 300 * 1.5,
+                    h: 200 * 1.5, 
+
+                    setup() {
+                        this.scrolly = dinos.logs.join('\n').length - 200
+                        this.maxScrolly = dinos.logs.join('\n').length - 200
+                        this.holdingScroller = false
+
+                        this.input = ''
+                        this.hist = []
+
+                        this.g.textFont('ubuntu mono, monospace') 
+                        this.g.textSize(16)
+                    },
+
+                    draw: function() {
+                        if (this.p.mouseIsPressed && dinos.memory.activitys[currActivity].gui.mouseIsOver( this.x + this.w - 8, this.y + this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70) || this.holdingScroller) {
+                                this.scrolly = this.p.constrain(this.p.map(this.p.mouseY - this.y, 0, this.h, 0, this.maxScrolly), 0, this.maxScrolly)
+                                this.holdingScroller = true
+                        }
+
+                        this.g.stroke('#302')
+                        this.g.fill('#302')
+                        this.g.rect(0, 0, this.w, this.g.height, 0, 0, 10, 10)
+
+                        this.g.push()
+                        this.g.translate(0, -this.scrolly)
+                        this.g.fill(255)
+                        this.g.text(dinos.logs.join('\n'), 15, 15, this.g.width - 25)
+                        this.g.text(this.input + (this.p.frameCount % 40 < 20 ? '_' : ''), 15, this.scrolly + this.h - 50, this.g.width - 25)
+                        this.g.pop()
+
+                        this.g.fill('pink')
+                        this.g.rect(this.w - 8, this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70, 2)
+                    },
+
+                    keyPressed: function() {
+                        if (this.p.keyCode >= 48 || this.p.keyCode === 32) this.input += p.key
+                        else if (this.input.length > 0) {
+                            if (this.p.keyIsDown(this.p.ENTER)) {
+                                if (this.p.keyIsDown(this.p.SHIFT)) {
+                                    // do thing...
+                                } else {
+                                    dinos.currDir = path;
+        
+                                    dinos.log('$ ' + this.input);
+                                    dinos.cmd_run(this.input);
+        
+                                    this.hist = [str, ...this.hist];
+                                    recalnum = 0;
+        
+                                    this.input = ''
+
+                                    this.scrolly = dinos.logs.join('\n').length - 200
+                                }
+                            } else if (p.keyIsDown(8)) {
+                                this.input = this.input.split('');
+                                this.input.splice(this.input.length - 1, 1);
+                                this.input = this.input.join('');
+                            }
+                        } 
+                    },
+
+                    mouseWheel: function(e) {
+                        this.maxScrolly = dinos.logs.join('\n').length - 200
+                        this.scrolly = this.p.constrain(this.scrolly - e.wheelDeltaY * 0.3, 0, this.maxScrolly)
+                    },
+
+                    mouseReleased: function() {
+                        this.holdingScroller = false
+                    },
+
+                    onChange: function() {
+                        (/*set icon*/ () => {
+                            let g = p.createGraphics(50, 50);
+                            g.fill('pink');
+                            g.rect(0, 0, 50, 50, 7);
+
+                            g.translate(25, 27);
+                            if (g.floor(g.random(10)) === 1) {
+                                g.rotate(g.PI / 2);
+                            }
+
+                            g.fill(0);
+                            g.textSize(50);
+                            g.textAlign('center', 'center');
+                            g.text(':P', 0, 0);
+                            this.iconImg = g.get();
+                        })();
+                    }
+                }
+            ));
         }
 
         p.draw = function() {
@@ -198,7 +257,19 @@ because Pizza is good.`, 20, 30);
 
             appActive = apps[apps.length - 1].mouseOver() || gui.mouseOverTop();
             memory.appActive = appActive;
-        };
+        }
+
+        p.keyPressed = function() {
+            if (appActive) apps[apps.length - 1].keyPressed()
+        }
+
+        p.keyTyped = function() {
+            if (appActive) apps[apps.length - 1].keyPressed()
+        }
+
+        p.keyReleased = function() {
+            if (appActive) apps[apps.length - 1].keyPressed()
+        }
 
         p.mouseDragged = function() {
             if (draggingApp) {apps[apps.length - 1].drag();} else
@@ -234,6 +305,15 @@ because Pizza is good.`, 20, 30);
             //     gui.requestAppChange = false;
             // }
         };
+
+        p.mouseWheel = e => {
+            for (let i = apps.length - 1; i >= 0; i --) {
+                if (apps[i].mouseOver()) {
+                    apps[i].mouseWheel(e)
+                    break
+                }
+            }
+        }
 
         p.windowResized = function() {
             p.resizeCanvas(p.windowWidth, p.windowHeight);

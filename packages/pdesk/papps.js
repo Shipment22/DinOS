@@ -35,7 +35,11 @@ class PApp {
         this.mousePressed = options.mousePressed || function() {};
         this.mouseReleased = options.mouseReleased || function() {};
         this.mouseDragged = options.mouseDragged || function() {};
+        this.keyPressed = options.keyPressed || function() {};
+        this.keyTyped = options.keyTyped || function() {};
+        this.keyReleased = options.keyReleased || function() {};
         this.whenActive = options.whenActive || function() {};
+        this.mouseWheel = options.mouseWheel || function() {};
 
         // setup :)
         this.setup();

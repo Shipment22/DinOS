@@ -5,4 +5,4 @@ setTimeout(() => {
     setTimeout(() => {
     	dinos.cmd_run('activity create pdesk');
 	}, 700);
-}, 1);
+}, 1)
