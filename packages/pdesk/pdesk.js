@@ -114,6 +114,7 @@ var pdesk = new (function() {
 
                         this.input = ''
                         this.hist = []
+                        this.path = '~'
 
                         this.g.textFont('ubuntu mono, monospace') 
                         this.g.textSize(16)
@@ -123,6 +124,13 @@ var pdesk = new (function() {
                         if (this.p.mouseIsPressed && dinos.memory.activitys[currActivity].gui.mouseIsOver( this.x + this.w - 8, this.y + this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70) || this.holdingScroller) {
                                 this.scrolly = this.p.constrain(this.p.map(this.p.mouseY - this.y, 0, this.h, 0, this.maxScrolly), 0, this.maxScrolly)
                                 this.holdingScroller = true
+                        } else if (this.p.keyIsPressed) {
+                            if (this.p.keyCode === 38) {
+                                this.scrolly -= 7
+                            } else if (this.p.keyCode === 40) {
+                                this.scrolly += 7
+                            }
+                            this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly )
                         }
 
                         this.g.stroke('#302')
@@ -133,7 +141,7 @@ var pdesk = new (function() {
                         this.g.translate(0, -this.scrolly)
                         this.g.fill(255)
                         this.g.text(dinos.logs.join('\n'), 15, 15, this.g.width - 25)
-                        this.g.text(this.input + (this.p.frameCount % 40 < 20 ? '_' : ''), 15, this.scrolly + this.h - 50, this.g.width - 25)
+                        this.g.text(this.path + this.input + (this.p.frameCount % 40 < 20 ? '_' : ''), 15, this.scrolly + this.h - 50, this.g.width - 25)
                         this.g.pop()
 
                         this.g.fill('pink')
@@ -147,23 +155,29 @@ var pdesk = new (function() {
                                 if (this.p.keyIsDown(this.p.SHIFT)) {
                                     // do thing...
                                 } else {
-                                    dinos.currDir = path;
+                                    dinos.currDir = this.path
         
-                                    dinos.log('$ ' + this.input);
-                                    dinos.cmd_run(this.input);
+                                    dinos.log('$ ' + this.input)
+                                    dinos.cmd_run(this.input)
         
-                                    this.hist = [str, ...this.hist];
-                                    recalnum = 0;
+                                    this.hist = [this.input, ...this.hist]
+                                    // recalnum = 0
         
                                     this.input = ''
 
                                     this.scrolly = dinos.logs.join('\n').length - 200
+                                    this.maxScrolly = dinos.logs.join('\n').length - 200
                                 }
-                            } else if (p.keyIsDown(8)) {
+                            } else if (this.p.keyIsDown(8)) {
                                 this.input = this.input.split('');
                                 this.input.splice(this.input.length - 1, 1);
                                 this.input = this.input.join('');
+                            } else if (this.p.keyCode === 33) {
+                                this.scrolly -= this.h
+                            } else if (this.p.keyCode === 34) {
+                                this.scrolly += this.h
                             }
+                            this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly )
                         } 
                     },
 
