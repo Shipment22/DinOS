@@ -264,11 +264,11 @@ var pdesk = new (function() {
         }
 
         p.keyTyped = function() {
-            if (appActive) apps[apps.length - 1].keyPressed()
+            if (appActive) apps[apps.length - 1].keyTyped()
         }
 
         p.keyReleased = function() {
-            if (appActive) apps[apps.length - 1].keyPressed()
+            if (appActive) apps[apps.length - 1].keyReleased()
         }
 
         p.mouseDragged = function() {
