@@ -166,6 +166,7 @@ var pdesk = new (function() {
                                     if (this.p.mouseIsPressed && dinos.memory.activitys[currActivity].gui.mouseIsOver( this.x + this.w - 8, this.y + this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70) || this.holdingScroller) {
                                             this.scrolly = this.p.constrain(this.p.map(this.p.mouseY - this.y, 0, this.h, 0, this.maxScrolly), 0, this.maxScrolly)
                                             this.holdingScroller = true
+                                            this.ableToDragEdge = false
                                     } else if (this.p.keyIsPressed) {
                                         if (this.p.keyCode === 33) {
                                             this.scrolly -= 8
@@ -249,9 +250,9 @@ var pdesk = new (function() {
                                         g.rect(0, 0, 50, 50, 7);
             
                                         g.translate(25, 27);
-                                        if (g.floor(g.random(10)) === 1) {
-                                            g.rotate(g.PI / 2);
-                                        }
+                                        // if (g.floor(g.random(10)) === 1) {
+                                        //     g.rotate(g.PI / 2);
+                                        // }
             
                                         g.fill(200);
                                         g.textSize(50);
@@ -345,7 +346,14 @@ var pdesk = new (function() {
 
         p.mouseDragged = function() {
             if (draggingApp) {apps[apps.length - 1].drag();} else
-            if (appActive) {apps[apps.length - 1].mouseDragged();}
+            if (appActive) {
+                if (apps[apps.length - 1].draggingEdge() || apps[apps.length - 1].edgeBeingDragged) {
+                    apps[apps.length - 1].edgeBeingDragged = true
+                    apps[apps.length - 1].edgeDragged() 
+                } else {
+                    apps[apps.length - 1].mouseDragged()
+                }
+            }
         };
 
         p.mouseReleased = function() {
@@ -356,7 +364,7 @@ var pdesk = new (function() {
             memory.appActive = appActive;
 
             if (appActive) {
-                apps[apps.length - 1].mouseReleased();
+                apps[apps.length - 1].mouseReleased()
                 if (apps[apps.length - 1].mouseOver()) {if(apps[apps.length - 1].mouseOverTop()) {apps[apps.length - 1].titleBarReleased();}}
             }
 

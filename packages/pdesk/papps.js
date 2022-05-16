@@ -11,6 +11,8 @@ class PApp {
         this.y = options.y || 200;
         this.w = options.w || 350;
         this.h = options.h + 25 || 300;
+        this.minW = options.minW || 70;
+        this.minH = options.minH + 25 || 50;
 
         // mouse offsets for when dragging
         this.mouseOffsetX = 0;
@@ -25,8 +27,10 @@ class PApp {
         this.g = this.p.createGraphics(this.w, this.h - this.titlebarH);
 
         // idk
-        this.changed = true;
-        this.closeButton = true;
+        this.changed = true
+        this.closeButton = true
+        this.edgeBeingDragged = false
+        this.ableToDragEdge = true
 
         // methods to be called
         this.content = options.draw || options.content || function() {};
@@ -75,8 +79,11 @@ class PApp {
     }
 
     doIfChanged() {
-        this.img = this.titlebar();
-        this.iconImg = this.icon();
+        this.img = this.titlebar()
+        this.iconImg = this.icon()
+        let g = this.g.get()
+        this.g = this.p.createGraphics(this.w, this.h - this.titlebarH)
+        this.g.image(g, 0, 0)
         this.onChange();
     }
 
@@ -130,8 +137,38 @@ class PApp {
         }
     }
 
+    draggingEdge() {
+        return this.mouseOver() && (this.p.mouseX < this.x + 5 || this.x + this.w < this.p.mouseX + 5 || this.p.mouseY < this.y + 5 || this.y + this.h < this.p.mouseY + 5)
+    }
+
+    edgeDragged() {
+        if (!this.p.mouseIsPressed || !this.ableToDragEdge) {
+            this.edgeBeingDragged = false
+            this.ableToDragEdge = true
+            return
+        }
+
+        let x = this.x, y = this.y, w = this.w, h = this.h
+        let movedX = this.p.mouseX - this.p.pmouseX, movedY = this.p.mouseY - this.p.pmouseY
+
+        if (this.p.mouseX < x + w / 2) {
+            x = x + movedX
+            w = this.p.max(w - movedX, this.minW)
+        } else {
+            w = this.p.max(w + movedX, this.minW)
+        }
+        if (!this.p.mouseY < y + 6) h = this.p.max(h + movedY, this.minH)
+
+        this.transform({
+            x: x,
+            y: y,
+            w: w,
+            h: h
+        })
+    }
+
     mouseOver() {
-        return this.p.mouseX > this.x && this.x + this.w > this.p.mouseX && this.p.mouseY > this.y && this.y + this.h > this.p.mouseY;
+        return this.p.mouseX > this.x && this.x + this.w > this.p.mouseX && this.p.mouseY > this.y && this.y + this.h > this.p.mouseY
     }
 
     mouseOverTop() {
@@ -142,6 +179,14 @@ class PApp {
         this.x = this.p.mouseX + this.mouseOffsetX;
         this.y = this.p.mouseY + this.mouseOffsetY;
         this.contentY = this.y + this.titlebarH;
+    }
+
+    transform(o) {
+        if (o.w) this.w = o.w
+        if (o.h) this.h = o.h
+        if (o.x) this.x = o.x
+        if (o.y) this.y = o.y
+        this.doIfChanged()
     }
 }
 
