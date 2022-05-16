@@ -97,119 +97,177 @@ var pdesk = new (function() {
                 }
             }));
 
-            apps.push(new PApp(
-                {
-                    title: 'test',
+            dinos.cmd_run('gimme PAppConverter')
 
-                    x: 60,
-                    y: 60,
-
-                    w: 300 * 1.5,
-                    h: 200 * 1.5, 
-
-                    setup() {
-                        this.scrolly = dinos.logs.join('\n').length - 200
-                        this.maxScrolly = dinos.logs.join('\n').length - 200
-                        this.holdingScroller = false
-
-                        this.input = ''
-                        this.hist = []
-                        this.path = '~'
-
-                        this.g.textFont('ubuntu mono, monospace') 
-                        this.g.textSize(16)
-                    },
-
-                    draw: function() {
-                        if (this.p.mouseIsPressed && dinos.memory.activitys[currActivity].gui.mouseIsOver( this.x + this.w - 8, this.y + this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70) || this.holdingScroller) {
-                                this.scrolly = this.p.constrain(this.p.map(this.p.mouseY - this.y, 0, this.h, 0, this.maxScrolly), 0, this.maxScrolly)
-                                this.holdingScroller = true
-                        } else if (this.p.keyIsPressed) {
-                            if (this.p.keyCode === 38) {
-                                this.scrolly -= 7
-                            } else if (this.p.keyCode === 40) {
-                                this.scrolly += 7
+            dinos.cmd_add({
+                name: ':P',
+                fun: () => {
+                    apps.push(new PApp(
+                        {
+                            title: ':P',
+                            setup: function() {
+                                // eval(convertToPApp(`rect(90,90,90,90)`, true))
+                                // this.g.background('pink')
+                                let that = this
+                                eval(convertToPApp(``, true))
                             }
-                            this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly )
                         }
+                    ))
 
-                        this.g.stroke('#302')
-                        this.g.fill('#302')
-                        this.g.rect(0, 0, this.w, this.g.height, 0, 0, 10, 10)
-
-                        this.g.push()
-                        this.g.translate(0, -this.scrolly)
-                        this.g.fill(255)
-                        this.g.text(dinos.logs.join('\n'), 15, 15, this.g.width - 25)
-                        this.g.text(this.path + this.input + (this.p.frameCount % 40 < 20 ? '_' : ''), 15, this.scrolly + this.h - 50, this.g.width - 25)
-                        this.g.pop()
-
-                        this.g.fill('pink')
-                        this.g.rect(this.w - 8, this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70, 2)
-                    },
-
-                    keyPressed: function() {
-                        if (this.p.keyCode >= 48 || this.p.keyCode === 32) this.input += p.key
-                        else if (this.input.length > 0) {
-                            if (this.p.keyIsDown(this.p.ENTER)) {
-                                if (this.p.keyIsDown(this.p.SHIFT)) {
-                                    // do thing...
-                                } else {
-                                    dinos.currDir = this.path
-        
-                                    dinos.log('$ ' + this.input)
-                                    dinos.cmd_run(this.input)
-        
-                                    this.hist = [this.input, ...this.hist]
-                                    // recalnum = 0
-        
-                                    this.input = ''
-
-                                    this.scrolly = dinos.logs.join('\n').length - 200
-                                    this.maxScrolly = dinos.logs.join('\n').length - 200
-                                }
-                            } else if (this.p.keyIsDown(8)) {
-                                this.input = this.input.split('');
-                                this.input.splice(this.input.length - 1, 1);
-                                this.input = this.input.join('');
-                            } else if (this.p.keyCode === 33) {
-                                this.scrolly -= this.h
-                            } else if (this.p.keyCode === 34) {
-                                this.scrolly += this.h
-                            }
-                            this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly )
-                        } 
-                    },
-
-                    mouseWheel: function(e) {
-                        this.maxScrolly = dinos.logs.join('\n').length - 200
-                        this.scrolly = this.p.constrain(this.scrolly - e.wheelDeltaY * 0.3, 0, this.maxScrolly)
-                    },
-
-                    mouseReleased: function() {
-                        this.holdingScroller = false
-                    },
-
-                    onChange: function() {
-                        (/*set icon*/ () => {
-                            let g = p.createGraphics(50, 50);
-                            g.fill('pink');
-                            g.rect(0, 0, 50, 50, 7);
-
-                            g.translate(25, 27);
-                            if (g.floor(g.random(10)) === 1) {
-                                g.rotate(g.PI / 2);
-                            }
-
-                            g.fill(0);
-                            g.textSize(50);
-                            g.textAlign('center', 'center');
-                            g.text(':P', 0, 0);
-                            this.iconImg = g.get();
-                        })();
+                    let P = ''
+                    for (let i = 0; i < 30; i ++) {
+                        P += ':P\n'
                     }
+                    return P
+                },
+                help: ':P',
+                list: true
+            })
+            setTimeout(() => dinos.cmd_run(':P'), 20)
+
+            dinos.cmd_add(
+                {
+                    name: 'terminal',
+                    fun: o => {
+                        apps.push(new PApp(
+                            {
+                                title: 'Dinnerminal (dinner terminal)',
+            
+                                x: 60,
+                                y: 60,
+            
+                                w: 300 * 1.5,
+                                h: 200 * 1.5, 
+            
+                                setup: function() {
+                                    this.scrolly = 0
+                                    this.maxScrolly = 0
+                                    this.holdingScroller = false
+            
+                                    this.input = ''
+                                    this.hist = []
+                                    this.histI = 0
+                                    this.login = 'bobert'
+                                    this.compuername = 'dinos'
+                                    this.path = '~'
+            
+                                    this.g.textFont('ubuntu mono, monospace') 
+                                    this.g.textSize(16)
+                                    this.g.textLeading(20)
+            
+                                    this.updateMaxScrolly = function() {
+                                        this.maxScrolly = (this.logs.join('\n').split('\n').length -4) * 20
+                                    }
+
+                                    this.log('Hello :)')
+                                },
+            
+                                draw: function() {
+                                    if (this.p.mouseIsPressed && dinos.memory.activitys[currActivity].gui.mouseIsOver( this.x + this.w - 8, this.y + this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70) || this.holdingScroller) {
+                                            this.scrolly = this.p.constrain(this.p.map(this.p.mouseY - this.y, 0, this.h, 0, this.maxScrolly), 0, this.maxScrolly)
+                                            this.holdingScroller = true
+                                    } else if (this.p.keyIsPressed) {
+                                        if (this.p.keyCode === 33) {
+                                            this.scrolly -= 8
+                                        } else if (this.p.keyCode === 34) {
+                                            this.scrolly += 8
+                                        }
+                                        this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly )
+                                    }
+            
+                                    this.g.stroke('#302')
+                                    this.g.fill('#302')
+                                    this.g.rect(0, 0, this.w, this.g.height, 0, 0, 10, 10)
+            
+                                    this.g.push()
+                                    this.g.translate(0, -this.scrolly)
+                                    this.g.fill(255)
+                                    this.g.text(this.logs.join('\n'), 15, 15, this.g.width - 25)
+                                    this.g.pop()
+            
+                                    this.g.fill(0)
+                                    this.g.rect(0, this.h - 55, this.w, 30, 0, 0, 10)
+                                    this.g.fill(255)
+                                    this.g.text(`${this.login}@${this.compuername}:${this.path}$ ${this.input + (this.p.frameCount % 40 < 20 ? '_' : '')}`, 15, this.h - 50, this.g.width - 25)
+            
+                                    this.g.fill('pink')
+                                    this.g.rect(this.w - 8, this.p.map(this.scrolly, 0, this.maxScrolly, 3, this.h - 100), 5, 70, 2)
+                                },
+            
+                                keyPressed: function() {
+                                    if (this.p.keyCode >= 48 || this.p.keyCode === 32) this.input += p.key 
+                                    else if (this.p.keyIsDown(38) && this.histI < this.hist.length) {
+                                        this.histI ++
+                                        this.input = this.hist[this.histI - 1]
+                                    } else if (this.p.keyIsDown(40)) {
+                                        this.input = ''
+                                        if (this.histI > 0) {
+                                            this.histI --
+                                            this.input = this.hist[this.histI - 1] || ''
+                                        }
+                                    }
+                                    else if (this.input.length > 0) {
+                                        if (this.p.keyIsDown(this.p.ENTER)) {
+                                            if (this.p.keyIsDown(this.p.SHIFT)) {
+                                                // do thing...
+                                            } else {
+                                                dinos.currDir = this.path
+                    
+                                                this.log('$ ' + this.input)
+                                                this.log(dinos.cmd_run(this.input))
+                    
+                                                this.hist = [this.input, ...this.hist]
+                                                this.histI = 0
+                    
+                                                this.input = ''
+            
+                                                this.updateMaxScrolly()
+                                                this.scrolly = this.maxScrolly
+                                            }
+                                        } else if (this.p.keyIsDown(8)) {
+                                            this.input = this.input.split('');
+                                            this.input.splice(this.input.length - 1, 1);
+                                            this.input = this.input.join('');
+                                        }
+                                        this.scrolly = this.p.constrain(this.scrolly, 0, this.maxScrolly)
+                                    } 
+                                },
+            
+                                mouseWheel: function(e) {
+                                    this.updateMaxScrolly()
+                                    this.scrolly = this.p.constrain(this.scrolly - e.wheelDeltaY * 0.3, 0, this.maxScrolly)
+                                },
+            
+                                mouseReleased: function() {
+                                    this.holdingScroller = false
+                                },
+            
+                                onChange: function() {
+                                    (/*set icon*/ () => {
+                                        let g = p.createGraphics(50, 50);
+                                        g.fill('#302');
+                                        g.rect(0, 0, 50, 50, 7);
+            
+                                        g.translate(25, 27);
+                                        if (g.floor(g.random(10)) === 1) {
+                                            g.rotate(g.PI / 2);
+                                        }
+            
+                                        g.fill(200);
+                                        g.textSize(50);
+                                        g.textAlign('center', 'center');
+                                        g.text(':)', 0, 0);
+                                        this.iconImg = g.get();
+                                    })();
+                                }
+                            }
+                        ));
+                    },
+                    help: 'opens terminal app in pdesk',
+                    list: true
                 }
-            ));
+            )
+            dinos.cmd_run('terminal')
         }
 
         p.draw = function() {

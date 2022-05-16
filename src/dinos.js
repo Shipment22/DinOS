@@ -31,9 +31,9 @@ var DINOS = function() {
                 let cmd = args[0];
                 args.splice(0, 1);
                 if (this.cmds[cmd]) {
-                    this.cmds[cmd].fun(args);
+                    return this.cmds[cmd].fun(args);
                 } else {
-                    dinos.log(cmd + ' is not a valid command.');
+                    return cmd + ' is not a valid command.'
                 }
             }
         }catch(e) {

@@ -3,70 +3,70 @@ dinos.cmd_add(
         name: 'help',
         fun: o => {
             if (o[0]) {
-                dinos.log(o[0] + ': ' + dinos.cmds[o[0]].help || 'no help text found :/');
+                return o[0] + ': ' + dinos.cmds[o[0]].help || 'no help text found :/'
             } else {
                 for (let j in dinos.cmds) {
                     if (!dinos.cmds[j].list) { continue; }
-                    dinos.log(`${j}: ${dinos.cmds[j].help || 'no help text found :/'}`);
+                    return `${j}: ${dinos.cmds[j].help || 'no help text found :/'}`
                 }
             }
         },
     }
-);
+)
 
 dinos.cmd_add(
     {
         name: 'hello',
         fun: o => {
-            dinos.log('Hello!! ' + o);
+            return 'Hello!! ' + o
         },
         help: 'Returns "Hello!!" + (optional) string of text',
         list: true
     }
-);
+)
 dinos.cmd_add(
     {
         name: 'hi',
         fun: o => {
-            dinos.log('Hi!! ' + o);
+            return 'Hi!! ' + o
         },
         help: 'Returns "Hi!!" + (optional) string of text',
         list: true
     }
-);
+)
 
 dinos.cmd_add(
     {
         name: 'echo',
         fun: o => {
             for (let j of o.join(' ').split(';')) {
-                dinos.log(j);
+                return j
             }
         },
         help: 'Outputs whatever you input',
         list: true
     }
-);
+)
 
 dinos.cmd_add(
     {
         name: 'dinos',
         fun: o => {
-            dinos.log('DinOS (Dinner OS)');
+            return 'something goes here...'
         },
     }
-);
+)
 
 dinos.cmd_add(
     {
         name: 'p5',
         fun: o => {
-            dinos.log(dinos.hasp5() ? 'p5 is loaded :)' : 'no p5 here');
+            return dinos.hasp5() ? 'p5 is loaded :)' : 'no p5 here'
         },
         help: 'outputs wether p5 exists',
         list: true
     },
-);
+)
 
 dinos.cmd_add(
     {
@@ -83,7 +83,7 @@ dinos.cmd_add(
                     currActivity = activitys.length - 1;
                     dinos.setupActivity();
                 } else {
-                    dinos.log(`I'm sorry, but ${o[1]} doesn't seem to exist/be loaded :\\`)
+                    return `I'm sorry, but ${o[1]} doesn't seem to exist/be loaded :\\`
                 }
             } else if (o[0] === 'switch') {
                 dinos.switchActivity(Number(o[1]));
@@ -91,42 +91,42 @@ dinos.cmd_add(
             }
         },
     }
-);
+)
 
 dinos.cmd_add(
     {   
         name: 'add_package',
         fun: install,
     }
-);
+)
 
 dinos.cmd_add({
     name: 'Link',
     fun: function() {
-        dinos.log('Link does exist.');
+        return 'Link does exist.'
     },
-});
+})
 
 dinos.cmd_add({
     name: 'rickroll',
     fun: function() {
-        dinos.log(dinos.rickroll);
+        return dinos.rickroll
     },
-});
+})
 
 dinos.cmd_add({
     name: ':(',
     fun: function() {
-        dinos.log('why so sad??');
+        return 'why so sad??'
     },
-});
+})
 
 dinos.cmd_add({
     name: ':)',
     fun: function() {
-        dinos.log('happy face!!');
+        return 'happy face!!'
     },
-});
+})
 
 dinos.cmd_add({
     name: 'fwrite',
@@ -138,28 +138,21 @@ dinos.cmd_add({
             str += `['${a}']`;
         }
         str = `dinos.storage${str} = '${o[1]}';`;
-        dinos.log(str);
+        return str
         eval(str);
     },
-});
+})
 
 dinos.cmd_add({
     name: 'fread',
     fun: function(o) {
-        dinos.log(dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`));
+        return dinos.translateDir(dinos.storage, `${dinos.currDir}/${o[0]}`)
     },
-});
+})
 
 dinos.cmd_add({
-    name: 'clear',
+    name: '!!CLEAR_DINOS_LOGS',
     fun: function() {
-        dinos.logs = [];
+        dinos.logs = []
     }
-});
-
-dinos.cmd_add({
-    name: 'bob',
-    fun: function() {
-        dinos.log('test');
-    }
-});
+})

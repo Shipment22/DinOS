@@ -159,14 +159,17 @@ function convertToPApp(txt, pjs = false) {
         'CLOSE',
         'text',
         'filter',
+        'width'
     ];
     txt = txt.replaceAll(/pushMatrix/g, 'push');
     txt = txt.replaceAll(/popMatrix/g, 'pop');
     for (let o of thatDotGDot) {
-        let regex = '/[^.]' + o + '(?! [A-Z])/g';
-        eval('regex = ' + regex);
+        // let regex = '/[^.]' + o + '(?! [A-Z])/g';
+        // eval('regex = ' + regex);
 
-        txt = txt.replaceAll(regex, '\nthat.g.' + o);
+        let regex = new RegExp(`([^.'("]|)${o}(?! [A-Z])`, 'g')
+
+        txt = txt.replaceAll(regex, ' that.g.' + o);
     }
 
     dinos.log(txt);

@@ -41,8 +41,18 @@ class PApp {
         this.whenActive = options.whenActive || function() {};
         this.mouseWheel = options.mouseWheel || function() {};
 
+        this.logs = []
+
         // setup :)
         this.setup();
+    }
+
+    log(l) {
+        if (typeof l === 'Object') {
+            for (o of l) {
+                this.logs.push(o)
+            }
+        } else this.logs.push(l)
     }
 
     draw() {
